@@ -2,11 +2,13 @@ package com.example.challenge_2.ui.components.topbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
@@ -37,11 +39,15 @@ fun AppTopBar(
     onMenuClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
 ) {
-    androidx.compose.foundation.layout.Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(TopBarBackground),
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(TopBarBackground)
+                .statusBarsPadding()
                 .height(64.dp)
                 .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
