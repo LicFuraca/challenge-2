@@ -20,13 +20,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.challenge_2.ui.components.bottomnav.AppBottomNav
+import com.example.challenge_2.ui.components.bottomnav.BottomNavTab
 import com.example.challenge_2.ui.components.menu.MenuItem
 import com.example.challenge_2.ui.components.menu.MenuShape
 import com.example.challenge_2.ui.components.menu.SideMenu
 import com.example.challenge_2.ui.components.topbar.AppTopBar
+import com.example.challenge_2.ui.screens.ShopListScreen
 import com.example.challenge_2.ui.theme.Challenge2Theme
+import com.example.challenge_2.ui.theme.SurfacePeach
 import kotlinx.coroutines.launch
 
 private val Items = listOf(
@@ -53,18 +56,19 @@ class MainActivity : ComponentActivity() {
 fun AppShell() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedId by remember { mutableStateOf("shop_list") }
+    var selectedMenuId by remember { mutableStateOf("shop_list") }
+    var selectedTab by remember { mutableStateOf(BottomNavTab.Product) }
 
-    val selected = Items.firstOrNull { it.id == selectedId } ?: Items.first()
+    val selectedMenuItem = Items.firstOrNull { it.id == selectedMenuId } ?: Items.first()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             SideMenu(
                 items = Items,
-                selectedId = selectedId,
+                selectedId = selectedMenuId,
                 onItemClick = { item ->
-                    selectedId = item.id
+                    selectedMenuId = item.id
                     scope.launch { drawerState.close() }
                 },
             )
@@ -73,17 +77,26 @@ fun AppShell() {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = selected.label,
+                    title = selectedMenuItem.label,
                     onMenuClick = { scope.launch { drawerState.open() } },
                 )
             },
+            bottomBar = {
+                AppBottomNav(
+                    selected = selectedTab,
+                    onTabSelect = { selectedTab = it },
+                )
+            },
+            containerColor = SurfacePeach,
         ) { padding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .background(Color(0xFFFBEFE9)),
-            )
+                    .background(SurfacePeach),
+            ) {
+                ShopListScreen()
+            }
         }
     }
 }
