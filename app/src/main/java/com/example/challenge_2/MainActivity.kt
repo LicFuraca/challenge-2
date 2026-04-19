@@ -32,6 +32,7 @@ import com.example.challenge_2.ui.components.menu.MenuShape
 import com.example.challenge_2.ui.components.menu.SideMenu
 import com.example.challenge_2.ui.components.topbar.AppTopBar
 import com.example.challenge_2.ui.screens.ProfileScreen
+import com.example.challenge_2.ui.screens.SettingsScreen
 import com.example.challenge_2.ui.screens.ShopListScreen
 import com.example.challenge_2.ui.theme.Challenge2Theme
 import com.example.challenge_2.ui.theme.OnSurfaceMuted
@@ -124,6 +125,7 @@ fun AppShell() {
                 when (currentScreen) {
                     AppScreen.ShopList -> ShopListScreen()
                     AppScreen.Profile -> ProfileScreen()
+                    AppScreen.Settings -> SettingsScreen()
                     else -> ComingSoon(currentScreen.title)
                 }
             }
