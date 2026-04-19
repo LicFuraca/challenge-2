@@ -31,7 +31,9 @@ import com.example.challenge_2.ui.components.menu.MenuItem
 import com.example.challenge_2.ui.components.menu.MenuShape
 import com.example.challenge_2.ui.components.menu.SideMenu
 import com.example.challenge_2.ui.components.topbar.AppTopBar
+import com.example.challenge_2.ui.components.card.Product
 import com.example.challenge_2.ui.screens.FavouritesScreen
+import com.example.challenge_2.ui.screens.ProductDetailScreen
 import com.example.challenge_2.ui.screens.ProfileScreen
 import com.example.challenge_2.ui.screens.SettingsScreen
 import com.example.challenge_2.ui.screens.ShopListScreen
@@ -78,6 +80,7 @@ fun AppShell() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var currentScreen by remember { mutableStateOf(AppScreen.ShopList) }
+    var detailProduct by remember { mutableStateOf<Product?>(null) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -88,6 +91,7 @@ fun AppShell() {
                 onItemClick = { item ->
                     AppScreen.entries.firstOrNull { it.menuId == item.id }?.let {
                         currentScreen = it
+                        detailProduct = null
                     }
                     scope.launch { drawerState.close() }
                 },
@@ -97,12 +101,19 @@ fun AppShell() {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = currentScreen.title,
-                    onBackClick = if (currentScreen != AppScreen.ShopList) {
-                        { currentScreen = AppScreen.ShopList }
-                    } else null,
+                    title = detailProduct?.name ?: currentScreen.title,
+                    onBackClick = when {
+                        detailProduct != null -> { { detailProduct = null } }
+                        currentScreen != AppScreen.ShopList -> {
+                            { currentScreen = AppScreen.ShopList }
+                        }
+                        else -> null
+                    },
                     onMenuClick = { scope.launch { drawerState.open() } },
-                    onProfileClick = { currentScreen = AppScreen.Profile },
+                    onProfileClick = {
+                        detailProduct = null
+                        currentScreen = AppScreen.Profile
+                    },
                 )
             },
             bottomBar = {
@@ -111,6 +122,7 @@ fun AppShell() {
                     onTabSelect = { tab ->
                         AppScreen.entries.firstOrNull { it.bottomTab == tab }?.let {
                             currentScreen = it
+                            detailProduct = null
                         }
                     },
                 )
@@ -123,12 +135,23 @@ fun AppShell() {
                     .padding(padding)
                     .background(SurfacePeach),
             ) {
-                when (currentScreen) {
-                    AppScreen.ShopList -> ShopListScreen()
-                    AppScreen.Profile -> ProfileScreen()
-                    AppScreen.Settings -> SettingsScreen()
-                    AppScreen.Favourites -> FavouritesScreen()
-                    else -> ComingSoon(currentScreen.title)
+                val active = detailProduct
+                if (active != null) {
+                    ProductDetailScreen(
+                        product = active,
+                        onBack = { detailProduct = null },
+                        onBuy = { _, _ -> detailProduct = null },
+                    )
+                } else {
+                    when (currentScreen) {
+                        AppScreen.ShopList -> ShopListScreen(
+                            onProductClick = { detailProduct = it },
+                        )
+                        AppScreen.Profile -> ProfileScreen()
+                        AppScreen.Settings -> SettingsScreen()
+                        AppScreen.Favourites -> FavouritesScreen()
+                        else -> ComingSoon(currentScreen.title)
+                    }
                 }
             }
         }

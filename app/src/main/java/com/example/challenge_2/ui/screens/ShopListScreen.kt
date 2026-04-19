@@ -45,6 +45,7 @@ private val SampleProducts = listOf(
 fun ShopListScreen(
     modifier: Modifier = Modifier,
     products: List<Product> = SampleProducts,
+    onProductClick: (Product) -> Unit = {},
     onAddToFavourite: (Product) -> Unit = {},
     onBuy: (Product) -> Unit = {},
 ) {
@@ -57,6 +58,7 @@ fun ShopListScreen(
         items(items = products, key = { it.id }) { product ->
             ProductCard(
                 product = product,
+                onClick = { onProductClick(product) },
                 onAddToFavourite = { onAddToFavourite(product) },
                 onBuy = { onBuy(product) },
                 modifier = Modifier.padding(bottom = 16.dp),
