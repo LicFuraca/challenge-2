@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.HorizontalDivider
@@ -36,6 +37,7 @@ private val TopBarDivider = Color(0xFFEAEAEA)
 fun AppTopBar(
     title: String,
     modifier: Modifier = Modifier,
+    onBackClick: (() -> Unit)? = null,
     onMenuClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
 ) {
@@ -53,13 +55,24 @@ fun AppTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            IconButton(onClick = onMenuClick) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Open menu",
-                    tint = TopBarIconTint,
-                    modifier = Modifier.size(26.dp),
-                )
+            if (onBackClick != null) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = TopBarIconTint,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            } else {
+                IconButton(onClick = onMenuClick) {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = "Open menu",
+                        tint = TopBarIconTint,
+                        modifier = Modifier.size(26.dp),
+                    )
+                }
             }
 
             Text(
@@ -88,6 +101,12 @@ fun AppTopBar(
 
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun AppTopBarPreview() {
+private fun AppTopBarMenuPreview() {
     AppTopBar(title = "Shop list")
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun AppTopBarBackPreview() {
+    AppTopBar(title = "Profile", onBackClick = {})
 }
